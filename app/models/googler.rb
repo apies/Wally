@@ -6,11 +6,7 @@ class Googler
   
   extend GooglerApiWrapper
   
-  def self.create_client
-  	@client = Google::APIClient.new
-  	@client.authorization.access_token = @token
-    @service = @client.discovered_api('blogger', 'v3')
-  end
+  
 
   # class << self
   #   attr_accessor :client, :service

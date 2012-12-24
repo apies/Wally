@@ -29,6 +29,7 @@ module GooglerApiWrapper
   end
   
   def create_client
+    puts "CREATING CLIENT!!!!"
   	@client = Google::APIClient.new
   	@client.authorization.access_token = @token
     @service = @client.discovered_api('blogger', 'v3')

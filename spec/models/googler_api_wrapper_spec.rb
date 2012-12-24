@@ -1,7 +1,7 @@
 require 'spec_helper'
 describe 'GooglerApiWrapper' do
   
-  before :all do
+  before :each do
     @object = Object.new
     @object.extend(GooglerApiWrapper)
     @object.service = Dir
@@ -40,6 +40,19 @@ describe 'GooglerApiWrapper' do
     @object.client = @client
     @client.should_receive(:execute).with(:api_method => Dir.pwd.length, :parameters => {'userId' => 'self'}, :headers => {'Content-Type' => 'application/json'})
     @object.length_pwd('userId' => 'self')
+  end
+  
+  it "should know to create a client before making the api calls" do
+    @client = double('client')
+    @object.client.should be_nil
+    @object.stub(:create_client).and_return(@object.client = @client)
+
+    @client.should_receive(:execute).with(:api_method => Dir.pwd.length, :parameters => {'userId' => 'self'}, :headers => {'Content-Type' => 'application/json'})
+
+    @object.length_pwd('userId' => 'self')
+    #api client should now be instantiated
+    @object.client.should_not be_nil
+
   end
   
   
