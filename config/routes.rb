@@ -1,4 +1,8 @@
 Wally::Application.routes.draw do
+  get "blogs/index"
+
+  get "blogs/show"
+
   root to: "main#index"
   match 'sessions/get_blog_stuff', to: 'sessions#get_blog_stuff'
   match 'auth/google_oauth2/callback', to: 'sessions#create'
