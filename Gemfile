@@ -21,7 +21,7 @@ end
 
 gem 'jquery-rails'
 
-group :test do #, :development do
+group :test, :development do #, :development do
   gem 'capybara'
   gem 'rspec-rails'
   gem 'vcr'
