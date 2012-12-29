@@ -1,12 +1,46 @@
 require 'google/api_client'
 require 'oauth2'
+#
 
 class Googler
   
   
   extend GooglerApiWrapper
-  
-  
+
+  class << self
+    attr_accessor :fetcher
+  end
+
+
+  def self.fetch_posts(blog_id, number_of_posts)
+    @fetcher = Fetcher.new(number_of_posts)
+    @fetcher.get_records { list_posts(:blogId => blog_id, :maxResults => 20, :nextPageToken => next_page_token ||= '') }
+  end
+
+  class Fetcher
+
+    attr_accessor :records, :remainder, :request_count
+
+    def initialize(desired_records_count)
+      @request_count = desired_records_count / 20
+      @remainder = desired_records_count % 20
+      @records = []
+    end
+
+    def get_records(&block)
+      #get first n pages
+      @request_count.times do
+        query_result = block.call.data #get_posts(:blogId => options[:blog_id], :maxResults => 20, :nextPageToken => next_page_token)
+        next_page_token = query_result['nextPageToken']
+        @records += query_result['items'] 
+      end
+      #get last page
+      @records += block.call.data['items'][0...@remainder] unless @remainder == 0
+      @records
+    end 
+    
+  end
+
 
   # class << self
   #   attr_accessor :client, :service
