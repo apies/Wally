@@ -25,16 +25,19 @@ group :test, :development do #, :development do
   gem 'capybara'
   gem 'rspec-rails'
   gem 'vcr'
+end
+
+group :test do
   gem 'webmock'
 end
 
 
-
+gem 'faye'
 
 gem 'google-api-client', :require => 'google/api_client'
 gem "omniauth-google-oauth2"
 gem 'oauth2'
-
+gem 'thin'
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

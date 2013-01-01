@@ -1,4 +1,4 @@
-module GooglerApiWrapper
+module GooglerApiWrapper 
 	
 	attr_accessor :token, :service, :client
   

@@ -11,112 +11,43 @@ class Googler
     attr_accessor :fetcher
   end
 
-
   def self.fetch_posts(blog_id, number_of_posts)
     @fetcher = Fetcher.new(number_of_posts)
-    @fetcher.get_records { list_posts(:blogId => blog_id, :maxResults => 20, :nextPageToken => next_page_token ||= '') }
+    request_lambda  = Proc.new  do |blog_id, token|
+      if token
+        list_posts(:blogId => blog_id, :maxResults => 20, :pageToken => token)
+      else
+        list_posts(:blogId => blog_id, :maxResults => 20)
+      end
+    end
+    @fetcher.fetch_records(blog_id, &request_lambda)
   end
 
   class Fetcher
 
-    attr_accessor :records, :remainder, :request_count
+    attr_accessor :records, :remainder, :request_count, :next_page_token
 
     def initialize(desired_records_count)
       @request_count = desired_records_count / 20
       @remainder = desired_records_count % 20
       @records = []
+      @next_page_token = ''
     end
 
-    def get_records(&block)
-      #get first n pages
-      @request_count.times do
-        query_result = block.call.data #get_posts(:blogId => options[:blog_id], :maxResults => 20, :nextPageToken => next_page_token)
-        next_page_token = query_result['nextPageToken']
-        @records += query_result['items'] 
+    def fetch_records(blog_id, &block)
+      until @request_count == 0
+        new_query_result = block.call(blog_id, @next_page_token).data
+        @records += new_query_result['items'] 
+        @next_page_token = new_query_result['nextPageToken']
+        @request_count -= 1
       end
-      #get last page
-      @records += block.call.data['items'][0...@remainder] unless @remainder == 0
+      @records += block.call(blog_id, @next_page_token).data['items'][0...@remainder] unless @remainder == 0
       @records
-    end 
-    
+    end
   end
 
 
-  # class << self
-  #   attr_accessor :client, :service
-  # 
-  #   def create_client(token)
-  #     puts 'CREATING CLIENT!'
-  #         @client = Google::APIClient.new
-  #         @client.authorization.access_token = token
-  #         @service = @client.discovered_api('blogger', 'v3')
-  #         #@service = @client.discovered_api('calendar', 'v3')
-  #       end
-  # 
-  #       def get_stuff(token = nil)
-  #         create_client(token) unless token.nil? 
-  #           
-  #       @result = @client.execute(
-  #           :api_method => @service.calendar_list.list,
-  #           :parameters => {},
-  #           :headers => {'Content-Type' => 'application/json'}
-  #       )
-  #       @result
-  #     end
-  # 
-  #     def get_blog_info(token = nil)
-  #       create_client(token) unless token.nil?
-  #       @service = @client.discovered_api('blogger', 'v3')
-  #       #binding.pry
-  #       #2510490903247292153
-  #       @result = @client.execute( :api_method => @service.blogs.get, :parameters => {:blogId => ENV['BLOG_ID']},:headers => {'Content-Type' => 'application/json'} )
-  #       #json_result = JSON.parse(@result.body)
-  #       #binding.pry
-  #       @result 
-  #     end
-  # 
-  #     def get_all_posts(token = nil)
-  #       create_client(token) unless token.nil?
-  #       @service = @client.discovered_api('blogger', 'v3')
-  #       @result = @client.execute(
-  #           :api_method => @service.posts.list,
-  #           :parameters => {:blogId => '2360593805083673688', :maxResults => 20},
-  #           :headers => {'Content-Type' => 'application/json'}
-  #       )
-  #       #blog_ids = @result.data['items'].map {|thing| thing['id'] }
-  #       @result
-  #         #content_array = @result.data['items'].map {|thing| thing['content'] }
-  #       #binding.pry
-  # 
-  #     end
-  # 
-  #     def get_my_user_info(token = nil)
-  #       create_client(token) unless token.nil?
-  #       params = { :api_method => @service.users.get, :parameters => {'userId' => 'self'}, :headers => {'Content-Type' => 'application/json'}  }
-  #       result = @client.execute(params)
-  #       @my_blogger_user_id = result.data['id']
-  #       @my_blogger_user_url = result.data['url']
-  #       @display_name = result.data['displayName'] 
-  #     end
-  # 
-  #     #might use this to extract blog ids for other calls
-  #     def get_my_blogs(token = nil)
-  #       create_client(token) unless token.nil?
-  #       params = { :api_method => @service.blogs.list_by_user, :parameters => {'userId' => 'self'}, :headers => {'Content-Type' => 'application/json'}  }
-  #       result = @client.execute(params)
-  #       #blog_ids = result.data['items'].map {|thing| thing['id'] }
-  #       #blog_names = result.data['items'].map {|thing| thing['name'] }
-  #         result
-  #     end
-  # 
-  # 
-  # 
-  # 
-  # end
+
 	
-
-
-
-
 
 end

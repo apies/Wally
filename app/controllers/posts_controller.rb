@@ -1,22 +1,11 @@
-class PostsController < ApplicationController
+class PostsController < ApplicationController  
   respond_to :json
   
   def index
   	Googler.token = session[:access_token]
-  	# blog = Googler.get_blogs('blogId' => params[:blog_id]).data
-
-  	# posts = Googler.list_posts(:blogId => params[:blog_id], :maxResults => 20)
-  	# next_page_token = posts['nextPageToken']
-
-  	# 10.times do 
-  	# 	post_items += Googler.list_posts(:blogId => params[:blog_id], :maxResults => 20).data['items']
-  	# end
-
-
-
-  	#posts = Googler.list_posts(:blogId => params[:blog_id], :maxResults => 20, :nextPageToken => params[:nextPageToken]).data
-  	posts = Googler.fetch_posts(params[:blog_id], 940)
-
+  	posts = Googler.fetch_posts(params[:blog_id], 100)
+  	#posts = Googler.list_posts(:blogId => params[:blog_id], :maxResults => 20, :pageToken => 'CgkIFBiA5pHosycQ2IiA2PDxoOEg').data
+  	#posts = Googler.list_posts(:blogId => params[:blog_id], :maxResults => 20, :pageToken => nil).data
   	render :json => posts.to_json
   end
 
