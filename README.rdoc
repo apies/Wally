@@ -11,7 +11,7 @@ link:http://www.quietlikehorses.com
 
 == Coffeescript 
 
-1. Angular Backend
+1. Angular Frontend
 
 
 === Goals

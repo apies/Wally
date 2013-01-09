@@ -10,7 +10,7 @@ class PostsController < ApplicationController
   end
 
   def show
-  	result = Googler.get_posts(:postId => params[:id])
+  	result = Googler.get_posts(:blogId => params[:blog_id], :postId => params[:id])
     render :json => result.data.to_json
   end
 
