@@ -2,17 +2,33 @@
 <html>
 <head>
   <title>Wally</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application", 'http://localhost:9292/faye.js' %>
+ 
+  <link rel="stylesheet" href="styles/051c0509.main.css"/>
+<!--   <%= javascript_include_tag "application", 'http://localhost:9292/faye.js' %> -->
   <%= csrf_meta_tags %>
 </head>
-<body>
+<body ng-app="WallyApp">
 <div id="user_nav">
   <%= link_to "Sign in with Google", "/auth/google_oauth2"%>
   <%=link_to "WHAT DOES THIS DO?", "/sessions/get_stuff" %>
 </div>
 
 <%= yield %>
+
+		<div class="container" ng-view></div>
+
+        <script src="scripts/vendor/d10639ae.angular.js"></script>
+        <script src="scripts/vendor/84c0eefb.angular-resource.js"></script>
+
+        <script src="scripts/e12237ae.scripts.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
 
 </body>
 </html>

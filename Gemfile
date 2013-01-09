@@ -22,13 +22,15 @@ end
 gem 'jquery-rails'
 
 group :test, :development do #, :development do
-  gem 'capybara'
+  #gem 'capybara', '~> 0.4.1'
   gem 'rspec-rails'
-  gem 'vcr'
+  gem 'capybara-webkit', '~> 0.5.0'
+  gem 'launchy'
+  #gem 'vcr'
 end
 
 group :test do
-  gem 'webmock'
+  #gem 'webmock'
 end
 
 

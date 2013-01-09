@@ -13,10 +13,10 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
-$(function(){
-	var faye = new Faye.Client('http://localhost:9292/faye');
-	faye.subscribe("/blog_load/new", function(data){
-		//going to have to create angular service to consume this
-		alert(data);
-	});
-});
+// $(function(){
+// 	var faye = new Faye.Client('http://localhost:9292/faye');
+// 	faye.subscribe("/blog_load/new", function(data){
+// 		//going to have to create angular service to consume this
+// 		alert(data);
+// 	});
+// });
