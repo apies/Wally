@@ -9,9 +9,6 @@ describe BlogsController do
     before :all do
       Googler.extend GooglerTestingService
       Googler.create_test_client
-      #stub_request(:get, "https://www.googleapis.com/discovery/v1/apis/blogger/v3/rest").
-       #   with(:headers => {'Accept'=>'*/*', 'Content-Type'=>'application/x-www-form-urlencoded', 'User-Agent'=>'google-api-ruby-client/0.5.0 Mac OS X/10.8.2'}).
-        #  to_return(:status => 200, :body => "", :headers => {})
     end
 
 
@@ -21,6 +18,7 @@ describe BlogsController do
     end
 
     it "returns a list of my blogs" do
+      pending "for some reason i cant use id = self with service accounts"
       xhr :get, :index, {}
     end
  end
@@ -29,11 +27,20 @@ describe BlogsController do
 
     let(:llb_id) { '2510490903247292153'}
 
-    it "returns http success" do
+    it "returns my blog details" do
       xhr :get, :show, :id => llb_id
       JSON.parse(response.body)['name'].should eq "Loud Like Bulls"
       response.should be_success
     end
+
+    it "returns a blog not found or invalid credentials message when an invalid blog id or credential is passed in and message includes params" do
+      Googler.token = 'invalidtoken123'
+      xhr :get, :show, :id => 'invalid1234232'
+      JSON.parse(response.body)['error']['message'].should match(/blogId:invalid1234232/)
+    end
+
+
+
   end
 
 end

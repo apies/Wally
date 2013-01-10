@@ -43,25 +43,26 @@ describe Googler::Fetcher do
     # end
 
     it 'should be able to fetch more than 20 posts with fetch method' do
-      #stub_client_wrapper_but_not_fetcher
+      pending "for some reason I can stub out all of googler when run running from sublime but rake errors"
+      stub_client_wrapper_but_not_fetcher
       
-      #Googler.stub(:list_posts).and_return( 1..77.to_a)
-      #Googler.should_receive(:build_api_method).with('posts', 'list').and_return(googler)
-      #googler.should_receive(:execute).and_return([])
-      #Googler.client = 
-      #Google::APIClient.should_receive(:new)
+      # Googler.stub(:list_posts).and_return( 1..77.to_a)
+      # Googler.should_receive(:build_api_method).with('posts', 'list').and_return(googler)
+      # googler.should_receive(:execute).and_return([])
+      # Googler.client = 
+      # Google::APIClient.should_receive(:new)
 
-      #googler
+      # googler
       # Googler.token = 'TOKENHERE'
 
       # #Googler.should_receive(:list_posts).and_return({'items' => (1..20).to_a, 'nextPageToken' => '324'})
       # Googler.should_receive(:fetch_records).with(12313) {googler.list_posts}
 
-      # posts = Googler.fetch_posts(12313, 77)
+      posts = Googler.fetch_posts(12313, 77)
 
 
 
-      # posts.count.should be 77
+      posts.count.should be 77
     end
 
   end

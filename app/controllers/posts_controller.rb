@@ -1,3 +1,4 @@
+require 'pry'
 class PostsController < ApplicationController  
   respond_to :json
   
@@ -11,7 +12,16 @@ class PostsController < ApplicationController
 
   def show
   	result = Googler.get_posts(:blogId => params[:blog_id], :postId => params[:id])
-    render :json => result.data.to_json
+    if result.data['error']
+      render :json => {
+        :error => {
+          :message => "unfortunately either blog with blog_id:#{params[:blog_id]}post_id:#{params[:id]} was not found" + 
+            " our your access_token #{session[:access_token]} is invalid"
+        }
+      }
+    else
+      render :json => result.data.to_json
+    end
   end
 
   def update

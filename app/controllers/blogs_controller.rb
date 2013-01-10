@@ -12,7 +12,15 @@ class BlogsController < ApplicationController
   def show
   	Googler.token = session[:access_token]
   	result = Googler.get_blogs({:blogId => params[:id]})
-  	render :json => result.data.to_json
+    if result.data['error']
+      render :json => {
+        :error => {
+          :message => "unfortunately either blog with blogId:#{params[:id]} was not found our your access_token #{session[:access_token]} is invalid"
+        }
+      }
+    else
+      render :json => result.data.to_json
+    end
   end
 
 
