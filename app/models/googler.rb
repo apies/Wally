@@ -6,9 +6,20 @@ class Googler
   
   
   extend GooglerApiWrapper
+  
 
   class << self
     attr_accessor :fetcher
+  end
+
+  def self.count_posts(blog_id)
+    blog = get_blogs(:blogId => blog_id)
+    blog.data['posts']['totalItems'].to_i
+  end
+
+  def self.all_posts(blog_id)
+    #binding.pry
+    fetch_posts(blog_id, count_posts(blog_id))
   end
 
   def self.fetch_posts(blog_id, number_of_posts)

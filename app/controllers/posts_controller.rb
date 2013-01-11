@@ -16,7 +16,7 @@ class PostsController < ApplicationController
       render :json => {
         :error => {
           :message => "unfortunately either blog with blog_id:#{params[:blog_id]}post_id:#{params[:id]} was not found" + 
-            " our your access_token #{session[:access_token]} is invalid"
+            " or your access_token #{session[:access_token]} is invalid"
         }
       }
     else
