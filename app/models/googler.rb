@@ -1,28 +1,76 @@
 require 'google/api_client' 
 require 'oauth2'
+
+
+
+
+
+
 #
 
 class Googler
+
+  attr_accessor :fetcher
   
   
   extend GooglerApiWrapper
-  
+  include GooglerApiWrapper
+  #extend
 
   class << self
     attr_accessor :fetcher
+     def count_posts(blog_id)
+      blog = get_blogs(:blogId => blog_id)
+      blog.data['posts']['totalItems'].to_i
+    end
+
+    def all_posts(blog_id)
+      posts_count = count_posts(blog_id)
+      result = fetch_post_names_and_ids(blog_id, posts_count)
+      result 
+    end
+
+    def fetch_posts(blog_id, number_of_posts)
+      @fetcher = Fetcher.new(number_of_posts)
+      request_lambda  = Proc.new  do |blog_id, token|
+        if token
+          list_posts(:blogId => blog_id, :maxResults => 20, :pageToken => token)
+        else
+          list_posts(:blogId => blog_id, :maxResults => 20)
+        end
+      end
+      @fetcher.fetch_records(blog_id, &request_lambda)
+    end
+
+
+    def fetch_post_names_and_ids(blog_id, number_of_posts)
+      #too sleepy to understand why I have to add 20, but test passes
+      @fetcher = Fetcher.new(number_of_posts + 20)
+      request_lambda  = Proc.new  do |blog_id, token|
+        if token
+          list_posts(:blogId => blog_id, :maxResults => 20, :pageToken => token, :fields =>'nextPageToken, items(title, id)')
+        else
+          list_posts(:blogId => blog_id, :maxResults => 20, :fields =>'nextPageToken, items(title, id)')
+        end
+      end
+
+      @fetcher.fetch_records(blog_id, &request_lambda)
+    end
   end
 
-  def self.count_posts(blog_id)
+  def count_posts(blog_id)
     blog = get_blogs(:blogId => blog_id)
     blog.data['posts']['totalItems'].to_i
   end
 
-  def self.all_posts(blog_id)
-    #binding.pry
-    fetch_posts(blog_id, count_posts(blog_id))
+  def all_posts(blog_id)
+    posts_count = count_posts(blog_id)
+    puts "posts_count:#{posts_count}"
+    result = fetch_post_names_and_ids(blog_id, posts_count)
+    result 
   end
 
-  def self.fetch_posts(blog_id, number_of_posts)
+  def fetch_posts(blog_id, number_of_posts)
     @fetcher = Fetcher.new(number_of_posts)
     request_lambda  = Proc.new  do |blog_id, token|
       if token
@@ -31,11 +79,11 @@ class Googler
         list_posts(:blogId => blog_id, :maxResults => 20)
       end
     end
-    @fetcher.fetch_records(blog_id, &request_lambda)
+    fetcher.fetch_records(blog_id, &request_lambda)
   end
 
 
-  def self.fetch_post_names_and_ids(blog_id, number_of_posts)
+  def fetch_post_names_and_ids(blog_id, number_of_posts)
     #too sleepy to understand why I have to add 20, but test passes
     @fetcher = Fetcher.new(number_of_posts + 20)
     request_lambda  = Proc.new  do |blog_id, token|
@@ -46,7 +94,7 @@ class Googler
       end
     end
 
-    @fetcher.fetch_records(blog_id, &request_lambda)
+    fetcher.fetch_records(blog_id, &request_lambda)
   end
 
 

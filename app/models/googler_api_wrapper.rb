@@ -1,6 +1,12 @@
-module GooglerApiWrapper 
+module GooglerApiWrapper  
 	
 	attr_accessor :token, :service, :client
+
+
+  def initialize(token = nil, service = nil)
+    @token = token
+    create_client(service)
+  end
   
   def get_method_hash(method_string)
     method_match = method_string.match(/([a-z]+)[_]([a-z]+)[_]*(.*)/)
@@ -17,7 +23,7 @@ module GooglerApiWrapper
   end
   
   def build_api_method(model, method)
-    api_method = @service.send(model).send(method)
+    api_method = service.send(model).send(method)
   end
 	
   def build_execution_hash(method_string, params)
@@ -27,18 +33,22 @@ module GooglerApiWrapper
     { :api_method => api_method, :parameters => params, :headers => {'Content-Type' => 'application/json'}  }
   end
   
-  def create_client
+  def create_client(service)
   	@client = Google::APIClient.new
-  	@client.authorization.access_token = @token
-    @service = @client.discovered_api('blogger', 'v3')
+  	client.authorization.access_token = token
+    instantiate_service(service)
+  end
+
+  def instantiate_service(service)
+    service.is_a?(String) ? @service = client.discovered_api(service, 'v3') : @service = service
   end
   
   def method_missing(method, *args)
     return super unless args[0]
-    create_client unless @client
+    create_client('blogger') unless client
     params = args[0]
     execution_hash = build_execution_hash(method.to_s, params)
-    result = @client.execute(execution_hash)
+    result = client.execute(execution_hash)
   end
     
 

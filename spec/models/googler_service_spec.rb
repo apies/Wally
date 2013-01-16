@@ -3,7 +3,7 @@ require 'spec_helper'
 describe GooglerService do
 
 	it "can instantiate a service client for testing and services" do
-		GooglerService.create_client
+		GooglerService.create_client('blogger')
 		GooglerService.service.should_not be_nil
 		GooglerService.service.should respond_to(:blogs)
 	end
