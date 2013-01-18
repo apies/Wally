@@ -1,17 +1,20 @@
-require 'pry'
+require 'pry' 
 class PostsController < ApplicationController  
+
+  before_filter :spawn_blogger
   respond_to :json
+
+  def spawn_blogger
+    @blogger = Googler.new(session[:access_token], 'blogger')
+  end
   
   def index
-  	Googler.token = session[:access_token]
-  	posts = Googler.fetch_posts(params[:blog_id], 40)
-    #binding.pry
-    #posts = Googler.fetch_post_names_and_ids(params[:blog_id], 40)
+    posts = @blogger.all_posts(params[:blog_id])
   	render :json => posts.to_json
   end
 
   def show
-  	result = Googler.get_posts(:blogId => params[:blog_id], :postId => params[:id])
+  	result = @blogger.get_posts(:blogId => params[:blog_id], :postId => params[:id])
     if result.data['error']
       render :json => {
         :error => {
@@ -25,7 +28,7 @@ class PostsController < ApplicationController
   end
 
   def update
-    result = Googler.update_posts(:postId => params[:id], :blogId => params[:blog_id], post => params[:post] )
+    result = Googler.update_posts(:postId => params[:id], :blogId => params[:blog_id], :post => params[:post] )
     render :json => result.to_json
   end
 

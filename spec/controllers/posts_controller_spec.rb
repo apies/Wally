@@ -8,7 +8,7 @@ describe PostsController do
 
     before :all do
       Googler.extend GooglerTestingService
-      Googler.create_test_client
+      Googler.include_test_client
     end
 
     it "returns a list of my posts" do
@@ -22,9 +22,13 @@ describe PostsController do
 
   describe "#show" do
 
+    before :all do
+      Googler.extend GooglerTestingService
+      Googler.create_test_client
+    end
+
     let(:first_llb_post_id) { '7525644124941255150' }
 
-    
 
     it "returns details about a post by post id" do
       xhr :get, :show, { :blog_id => llb_id , :id => first_llb_post_id }

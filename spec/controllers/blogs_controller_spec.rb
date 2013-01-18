@@ -6,9 +6,9 @@ describe BlogsController do
 
   describe "#index" do
 
-    before :all do
+    before :each do
       Googler.extend GooglerTestingService
-      Googler.create_test_client
+      Googler.include_test_client
     end
 
 
@@ -24,6 +24,11 @@ describe BlogsController do
  end
 
   describe "#show" do
+
+    before :each do
+      Googler.extend GooglerTestingService
+      Googler.include_test_client
+    end
 
     let(:llb_id) { '2510490903247292153'}
 

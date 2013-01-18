@@ -32,17 +32,21 @@ describe Googler do
 
 		it "should be able to fetch 77 posts from the quiet like horses blog" do
 
-			posts = blogger.fetch_post_names_and_ids(qlh_id, 77)
-			posts.count.should eq 77
+			posts = blogger.fetch_post_names_and_ids(qlh_id, 27)
+			posts.count.should eq 27
 		end
 
 		it "should be able to get all posts for a blog" do
-			#pending
-			#pending "this example made me realize i was implementing architecture wrong"
 			result  = blogger.all_posts(llb_id)
 			result.count.should be > 1
-			#puts result.to_json
-			#.should eq 2
+		end
+
+		it "can update a blogger post" do
+			#pending "this is the next feature"
+			backup_fixture_string = File.read(Rails.root.join('spec/fixtures/blogs/2510490903247292153/posts/7525644124941255150.json'))
+			backup_fixture = JSON.parse(backup_fixture_string)
+			puts backup_fixture['content'].gsub(/(s[0-9]{3})\//, 's600/').gsub(/height="[0-9]{3}"/, '').gsub(/width="[0-9]{3}"/, '')
+			#blogger.update_posts(:postId => params[:id], :blogId => params[:blog_id], :post => params[:post] )
 		end
 
 
@@ -53,7 +57,7 @@ describe Googler do
 
 
 
-	context "Blogs" do
+	context "old class model Blogs" do
 
 		it "should be able to fetch some data from my blog" do
 			result = Googler.get_blogs(:blogId => llb_id)
@@ -63,7 +67,7 @@ describe Googler do
 	end
 	
 
-	context "Posts" do
+	context "old class model Posts" do
 		
 		it "should be able to count the number of posts a blog contains" do
 			posts_count = Googler.count_posts(llb_id)

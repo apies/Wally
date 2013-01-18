@@ -1,17 +1,21 @@
 class BlogsController < ApplicationController
+
+  before_filter :spawn_blogger
   respond_to :json
+
+  def spawn_blogger
+    @blogger = Googler.new(session[:access_token], 'blogger')
+  end
 
 
   
   def index
-  	Googler.token = session[:access_token]
-  	result = Googler.list_blogs_by_user({'userId' => 'self'})
+  	result = @blogger.list_blogs_by_user({'userId' => 'self'})
   	render :json => result.data['items'].to_json
   end
 
   def show
-  	Googler.token = session[:access_token]
-  	result = Googler.get_blogs(:blogId => params[:id])
+  	result = @blogger.get_blogs(:blogId => params[:id])
     if result.data['error']
       render :json => {
         :error => {
